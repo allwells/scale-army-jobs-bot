@@ -24,8 +24,6 @@ If `jobs.json` doesn't exist yet, the bot records all current jobs silently — 
 
 - Python 3.8+
 - A Telegram bot token and chat ID (see below)
-- Python 3.8+
-- A Telegram bot token and chat ID (see below)
 - A GitHub repository with Actions enabled
 
 ---
