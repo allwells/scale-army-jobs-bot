@@ -87,17 +87,23 @@ On first run, `jobs.json` and `bot.log` are created automatically.
 
 ## GitHub Actions Setup (Free Hosting)
 
-### 1. Add Secrets
+### 1. Add Repository Secrets
 
-Go to your repository on GitHub:  
-**Settings → Secrets and Variables → Actions → New repository secret**
+**CRITICAL:** Do not add these under "Environments". They must be **Repository secrets**.
 
-Add two secrets:
+1. Go to your repository on GitHub.
+2. Navigate to **Settings → Secrets and Variables → Actions**.
+3. Ensure you are on the **Secrets** tab (not Variables).
+4. Click **New repository secret** (the green button).
+
+Add these two secrets:
 
 | Name                 | Value                         |
 | -------------------- | ----------------------------- |
 | `TELEGRAM_BOT_TOKEN` | Your bot token from BotFather |
 | `TELEGRAM_CHAT_ID`   | Your chat ID                  |
+
+> **Note:** If you accidentally added them as "Environment secrets", the bot will not see them unless you explicitly configure the workflow to use that environment. Using **Repository secrets** is the easiest way to get started.
 
 ### 2. Push the Workflow
 
