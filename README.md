@@ -10,7 +10,7 @@ A lightweight Python bot that monitors the [Scale Army Careers](https://jobs.ash
 2. The bot fetches all current jobs from the Ashby public API.
 3. It compares the current listings against `jobs.json` (the persisted state file stored in this repo).
 4. **New jobs** → one Telegram message per new posting.
-5. **No new jobs** → a short confirmation message so you know the bot ran.
+5. **No new jobs** → The bot exits silently (no notification), but logs the activity.
 6. **Removed jobs** → pruned from `jobs.json` silently (no notification).
 7. The updated `jobs.json` is committed back to the repo so state persists across runs.
 

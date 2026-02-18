@@ -209,12 +209,6 @@ def format_new_job_message(job: dict) -> str:
     )
 
 
-def format_no_new_jobs_message(timestamp: str, platforms: list) -> str:
-    platforms_str = ", ".join(platforms)
-    return (
-        f"🔍 Checked {platforms_str} — no new jobs posted.\n"
-        f"🕐 Checked at: {timestamp}"
-    )
 
 # ---------------------------------------------------------------------------
 # Main
@@ -285,10 +279,7 @@ def main() -> None:
             if success:
                 logging.info(f"Notified: [{job['platform']}] {job['title']} ({job_id})")
     else:
-        # No new jobs — send a confirmation so the user knows the bot ran
-        logging.info("No new jobs found. Sending confirmation message...")
-        message = format_no_new_jobs_message(timestamp, platforms_checked)
-        send_telegram_message(message, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
+        logging.info("No new jobs found during this cycle.")
 
     logging.info("Run complete.")
 
