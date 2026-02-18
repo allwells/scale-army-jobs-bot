@@ -130,10 +130,12 @@ scale-army-jobs-bot/
 ├── .github/
 │   └── workflows/
 │       └── bot.yml        ← GitHub Actions workflow
-├── main.py                ← All bot logic
-├── requirements.txt       ← requests only
-├── jobs.json              ← Auto-created; committed by the workflow
-└── bot.log                ← Auto-created; local run log
+├── .env.template          ← Template for credentials
+├── .gitignore             ← Git exclusion rules
+├── main.py                ← All bot logic (multi-board support)
+├── requirements.txt       ← Project dependencies (requests)
+├── jobs.json              ← Auto-created; persists seen job IDs
+└── bot.log                ← Auto-created; local execution log
 ```
 
 ---
