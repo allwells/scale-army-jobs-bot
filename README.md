@@ -118,8 +118,8 @@ Go to **Actions → Scale Army Job Alert Bot → Run workflow** to trigger a run
 Edit the `cron` expression in `.github/workflows/bot.yml`:
 
 ```yaml
-- cron: "*/30 * * * *" # Every 30 minutes
-- cron: "0 * * * *" # Every hour (default)
+- cron: "*/30 * * * *" # Every 30 minutes (default)
+- cron: "0 * * * *" # Every hour
 - cron: "0 */2 * * *" # Every 2 hours
 ```
 

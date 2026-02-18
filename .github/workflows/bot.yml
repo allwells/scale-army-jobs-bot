@@ -2,11 +2,11 @@ name: Scale Army Job Alert Bot
 
 on:
   schedule:
-    # Runs every hour. Adjust to change frequency.
+    # Runs every 30 minutes. Adjust to change frequency.
     # Every 30 mins: '*/30 * * * *'
     # Every hour:  '0 * * * *'
     # Every 2 hrs: '0 */2 * * *'
-    - cron: "0 * * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch: # Allows manual trigger from the GitHub Actions UI
 
 jobs:
