@@ -24,11 +24,15 @@ If `jobs.json` doesn't exist yet, the bot records all current jobs silently — 
 
 - Python 3.8+
 - A Telegram bot token and chat ID (see below)
+- Python 3.8+
+- A Telegram bot token and chat ID (see below)
 - A GitHub repository with Actions enabled
 
 ---
 
 ## Local Setup
+
+### Method 1: Standard
 
 ```bash
 # Clone the repo
@@ -43,6 +47,22 @@ pip install -r requirements.txt
 # Then edit .env with your token and chat ID
 
 # Run the bot
+python main.py
+```
+
+### Method 2: Virtual Environment (Recommended)
+
+If you encounter `ModuleNotFoundError` or have multiple Python versions installed, use a virtual environment:
+
+```bash
+# Create the environment
+python3 -m venv venv
+
+# Activate it
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install and run
+pip install -r requirements.txt
 python main.py
 ```
 
