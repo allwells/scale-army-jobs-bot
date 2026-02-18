@@ -1,0 +1,72 @@
+# Agent Rules
+
+These rules apply to every decision made during this build. If a design choice conflicts with a rule, the rule wins.
+
+## Architecture
+
+- Everything lives in `main.py`. No separate modules, packages, or helper files.
+- No classes unless a function genuinely cannot be expressed without one.
+- No `async`/`await`. The bot is fully synchronous.
+- The script is a **single-run script**: one full polling cycle, then exits with code `0`. No loops, no sleeping, no waiting.
+- No Docker or containerisation. Must run with `python main.py`.
+
+## Libraries
+
+- `requests` only — for all HTTP calls to both the Ashby API and Telegram Bot API.
+- ❌ Do NOT use `schedule`, `APScheduler`, or any scheduling library. GitHub Actions owns the schedule.
+- ❌ Do NOT use `python-telegram-bot`. Call the Telegram HTTP API directly with `requests`.
+- `requirements.txt` contains only `requests`. No other dependencies.
+
+## Configuration
+
+- `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` must be read from environment variables via `os.environ.get()`.
+- The `CONFIG` block at the top of `main.py` holds only non-sensitive values: `JOBS_FILE` and `LOG_FILE`.
+- `POLL_INTERVAL_MINUTES` does not exist in the script. The interval is the workflow's cron expression.
+- ❌ No hardcoded tokens, chat IDs, or credentials anywhere in the codebase.
+- Validate at startup that both env vars are non-empty. Exit with a clear error message if either is missing.
+
+## Function Names
+
+Use these exact names — do not rename them:
+
+- `fetch_jobs()` — calls Ashby API, returns list of job dicts or empty list on failure
+- `load_seen_ids(filepath)` — returns `(set_of_ids, is_first_run: bool)`
+- `save_seen_ids(ids, filepath)` — writes to disk immediately
+- `send_telegram_message(text, token, chat_id)` — sends to Telegram, retries once on failure
+- `check_for_new_jobs()` — orchestrates the full cycle: fetch → diff → save → notify → exit
+
+No `run_bot()` function. The entry point calls `check_for_new_jobs()` directly.
+
+## Persistence
+
+- `jobs.json` format: `{"ids": ["abc123", "def456"]}` — single key, list of strings, sorted.
+- Write to disk **before** sending Telegram messages. If send fails mid-batch, no duplicates on next run.
+- If file is missing or corrupted: log a warning, treat as empty, rebuild. Never crash.
+- The script never runs git commands. The GitHub Actions workflow commits `jobs.json` back to the repo.
+
+## Error Handling
+
+- Wrap all network calls in `try/except requests.exceptions.RequestException`.
+- Ashby API failure: log the error, exit with code `1` so GitHub Actions marks the run as failed.
+- Telegram send failure: log the error, retry once after 5 seconds, then move on.
+- Wrap `check_for_new_jobs()` in a top-level `try/except` so unexpected exceptions are logged before exit.
+
+## Notifications
+
+- One Telegram message per new job. Never batch multiple jobs into one message.
+- Always send the "no new posts" message. It is a heartbeat — not optional.
+- Use `parse_mode=Markdown` on all messages.
+- Never send alerts for jobs that existed before the first run.
+
+## Logging
+
+- Use `logging` module only. No `print()` for operational output.
+- Log to both stdout and `bot.log`.
+- Every cycle logs: timestamp, total jobs fetched, number of new jobs found.
+- Errors log the exception message (not full traceback for network errors).
+
+## Code Quality
+
+- Inline comments on non-obvious logic explaining the _why_, not the _what_.
+- Must comment: first-run detection, ID-diffing logic, retry logic, write-before-notify ordering.
+- Readable by a non-expert Python developer. Clear two-liners over clever one-liners.

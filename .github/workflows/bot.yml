@@ -1,0 +1,49 @@
+name: Scale Army Job Alert Bot
+
+on:
+  schedule:
+    # Runs every hour. Adjust to change frequency.
+    # Every 30 mins: '*/30 * * * *'
+    # Every hour:  '0 * * * *'
+    # Every 2 hrs: '0 */2 * * *'
+    - cron: "0 * * * *"
+  workflow_dispatch: # Allows manual trigger from the GitHub Actions UI
+
+jobs:
+  check-jobs:
+    runs-on: ubuntu-latest
+
+    # Required: without this, git push at the end returns 403 Forbidden
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # This pulls jobs.json from the repo onto the runner filesystem
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the bot
+        env:
+          # Secrets are stored in GitHub → Settings → Secrets and Variables → Actions
+          # They are never stored in code or committed to the repo
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python main.py
+
+      - name: Commit updated jobs.json
+        run: |
+          git config user.name "Allwell Onen"
+          git config user.email "aleenfestus@gmail.com"
+          git add jobs.json
+          # Only commit if the file actually changed — without this guard, git commit
+          # exits non-zero when nothing changed, which would fail the workflow run
+          git diff --staged --quiet || git commit -m "chore: update job IDs"
+          git push

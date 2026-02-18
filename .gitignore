@@ -1,0 +1,28 @@
+# Environment variables (Sensitive)
+.env
+.env.*.local
+
+# Logs
+*.log
+bot.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS/Editor specific
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
